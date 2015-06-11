@@ -93,6 +93,9 @@ class AzureStorage(Storage):
             'BlockBlob', x_ms_blob_content_type=content_type)
         content.close()
 
+        # Avoid the filesize cache trying to access the file again after close.
+        content._size = len(content_str)
+
         return name
 
     def listdir(self, path):
