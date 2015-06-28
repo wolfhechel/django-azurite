@@ -10,6 +10,5 @@ class Command(BaseSynchronizeCommand):
 
     # paths
     DIRECTORY = os.path.abspath(settings.MEDIA_ROOT)
-    URL = settings.MEDIA_URL
 
     purge_missing_files = False

@@ -10,6 +10,5 @@ class Command(BaseSynchronizeCommand):
 
     # paths
     DIRECTORY = os.path.abspath(settings.STATIC_ROOT)
-    URL = settings.STATIC_URL
 
     purge_missing_files = True

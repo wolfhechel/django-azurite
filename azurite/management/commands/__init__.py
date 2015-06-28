@@ -58,7 +58,6 @@ class BaseSynchronizeCommand(BaseCommand):
     delete_count = 0
     service = None
 
-    _url = None
     _directory = None
 
     def handle(self, *args, **options):
@@ -72,8 +71,6 @@ class BaseSynchronizeCommand(BaseCommand):
 
         if not self.DIRECTORY.endswith('/'):
             self._directory += os.path.sep
-
-        self._url = self.URL.lstrip('/')
 
         self.sync_files()
 
@@ -123,7 +120,7 @@ class BaseSynchronizeCommand(BaseCommand):
             if os.path.isdir(file_path):
                 continue # Don't try to upload directories
 
-            object_name = self._url + file_path.split(self._directory)[1]
+            object_name = file_path.split(self._directory)[1]
             self.local_object_names.append(object_name)
 
             try:
