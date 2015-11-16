@@ -1,13 +1,14 @@
 import datetime
 import mimetypes
 
-from azure import WindowsAzureMissingResourceError
-from azure.storage import BlobService
-
-from azurite.settings import AZURITE
-
-from django.core.files.base import File, ContentFile
+from django.core.files.base import ContentFile
 from django.core.files.storage import Storage
+from django.conf import settings
+
+from .compat import BlobService, WindowsAzureMissingResourceError
+from .settings import AZURITE
+from . import cors
+
 
 class AzureStorage(Storage):
     """
@@ -28,6 +29,14 @@ class AzureStorage(Storage):
 
         if use_ssl is not None:
             self.use_ssl = use_ssl
+
+        self._create_container()
+
+    def _create_container(self):
+        self._get_service().create_container(
+            container_name=self.container,
+            x_ms_blob_public_access='blob'
+        )
 
     def __getstate__(self):
         return dict(account_name=self.account_name,
@@ -172,3 +181,26 @@ class AzureStaticStorage(AzureStorage):
     STATICFILES_STORAGE = 'azurite.storage.AzureStaticStorage'.
     """
     container = AZURITE['STATIC_CONTAINER']
+
+    def post_process(self, paths, dry_run=False, **options):
+        if not dry_run:
+            self.update_cors_headers()
+
+        return [(path, path, False) for path in paths.iterkeys()]
+
+    def update_cors_headers(self):
+        storage_service_properties = cors.StorageServiceProperties()
+
+        if AZURITE.get('USE_CORS', False):
+            if settings.DEBUG:
+                origins = None  # Will default to allow host
+            else:
+                origins = []
+
+                for allowed_host in settings.ALLOWED_HOSTS:
+                    origins.extend(['%s://%s' % (scheme, allowed_host)
+                                    for scheme in ('http', 'https')])
+
+            storage_service_properties.add_cors_origin(origins=origins)
+
+        self._get_service().set_blob_service_properties(storage_service_properties)

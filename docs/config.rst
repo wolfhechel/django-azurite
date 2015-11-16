@@ -69,5 +69,14 @@ Set to ``True`` if you need to use https. ``False`` should be sufficient for mos
 
 **Note:** If using the CDN service be sure to enable HTTPS.
 
+``USE_CORS``
+------------
+
+Default is ``False``.
+Set to ``True`` to update Cross-Origin-Request headers on the blob service.
+
+If ``DEBUG`` is ``True`` it will update the CORS settings to allow any host,
+if not then it will use the hosts in ``ALLOWED_HOSTS``.
+
 .. toctree::
    :maxdepth: 2

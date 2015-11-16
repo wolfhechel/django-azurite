@@ -3,9 +3,9 @@ import mimetypes
 import optparse
 import os
 
-from azure import WindowsAzureMissingResourceError
-from azure.storage import BlobService
+from ...compat import *
 
+from azurite import cors
 from azurite.settings import AZURITE
 
 from django.conf import settings
