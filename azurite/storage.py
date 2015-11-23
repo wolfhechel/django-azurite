@@ -87,8 +87,9 @@ class AzureStorage(Storage):
         Use the Azure Storage service to write ``content`` to a remote file
         (called ``name``).
         """
+
         content.open()
-        content_type = None
+
         if hasattr(content.file, 'content_type'):
             content_type = content.file.content_type
         else:
@@ -100,10 +101,6 @@ class AzureStorage(Storage):
             content_str = content.read()
         self._get_service().put_blob(self.container, name, content_str,
             'BlockBlob', x_ms_blob_content_type=content_type)
-        content.close()
-
-        # Avoid the filesize cache trying to access the file again after close.
-        content._size = len(content_str)
 
         return name
 
