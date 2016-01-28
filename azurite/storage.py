@@ -189,7 +189,8 @@ class AzureStaticStorage(AzureStorage):
         storage_service_properties = cors.StorageServiceProperties()
 
         if AZURITE.get('USE_CORS', False):
-            if settings.DEBUG:
+            # Allow all hosts if we're running in DEBUG or explicitly wants to use wildcard domain
+            if settings.DEBUG or AZURITE.get('USE_CORS_WILDCARD', False):
                 origins = None  # Will default to allow host
             else:
                 origins = []
