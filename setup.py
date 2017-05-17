@@ -13,7 +13,7 @@ setup(
     license="MIT",
     packages=find_packages(),
     zip_safe=False,
-    install_requires=["azure>=0.6.1"],
+    install_requires=["azure>=0.6.1,<2.0"],
     include_package_data=True,
     classifiers=[
         "Programming Language :: Python",
